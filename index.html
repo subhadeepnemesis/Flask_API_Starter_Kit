@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Essenvia</title>
+        <script src="https://cdn.ckeditor.com/4.12.1/standard/ckeditor.js"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+    </head>
+    <style>
+        table {
+          width:100%;
+        }
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+        th, td {
+          padding: 15px;
+          text-align: left;
+        }
+        table#t tr:nth-child(even) {
+          background-color: #eee;
+        }
+        table#t tr:nth-child(odd) {
+         background-color: #fff;
+        }
+        table#t th {
+          background-color: black;
+          color: white;
+        }
+        input[type=button], input[type=submit] {
+          background-color: #1595e6;
+          border: none;
+          color: white;
+          padding: 16px 32px;
+          text-decoration: none;
+          margin: 4px 2px;
+          cursor: pointer;
+        }
+        </style>
+    <body>
+		<h1>Essenvia</h1>
+		<form id="editor_form" action="#" method="post">
+        	<textarea id="desc" name="desc"></textarea>
+        	<div style="padding-top: 10px;">
+                <input type="submit" name="Save" id="save" value="SAVE" class="button">
+            </div><span id="msg"></span>
+    	</form>
+        <table id="t">
+        </table>
+    </body>
+</html>
+<script>
+CKEDITOR.replace('desc');
+var host = "http://0.0.0.0:5000/"
+var table = "";
+function get_call(){
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": host+"get_data",
+        "method": "GET",
+        "headers": {
+            "Content-Type": "application/json",
+            "Accept": "*/*",
+            "Cache-Control": "no-cache",
+            "Access-Control-Allow-Origin": "*",
+        }
+    }
+    $.ajax(settings).done(function (response) {
+        console.log(response);
+        if (response) {
+            if(response.success == true){
+                l = response.data.length
+                if( l >= 1){
+                    var i;
+                    table = "<tr><th>Contents</th></tr>";
+                    for (i = 0; i < l; i++) {
+                      table += "<tr><td>"+response.data[i].desc+"</td></tr>";
+                    }
+                }     
+            }
+        }
+        $('#t').html(table);
+    });
+}
+$(document).ready(function(){
+    get_call();
+    $("#save").on("click", function(e) {
+        e.preventDefault();
+        var description = CKEDITOR.instances['desc'].getData();
+        var obj = {"desc": description};
+        var settings = {
+            "async": true,
+            "crossDomain": true,
+            "url": host+"set_data",
+            "method": "POST",
+            "headers": {
+                "Content-Type": "application/json",
+                "Accept": "*/*",
+                "Cache-Control": "no-cache"
+            },
+            "data": JSON.stringify(obj)
+        }
+        console.log(settings['data']);
+        $.ajax(settings).done(function (response) {
+            console.log(response);
+            if (response) {
+                var msg = response.msg
+                $('#msg').html(msg);
+                if(response.success == true){
+                    get_call();
+                }
+            }
+        });
+    });
+});
+</script>
