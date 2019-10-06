@@ -1,0 +1,14 @@
+Steps to be follow:-
+1. Create envrionment using virtualenv.
+	virtualenv <envName>
+2. Activate the envrionment.
+	source <envName>/bin/activate
+3. Install the dependencies
+	pip install -r requirement.txt
+4. Run server:-
+   python app.py
+5. open task.html in browser & use it.
+6. To deactivate the environment, firstly stop the server, then deactivate it.
+   ctrl + c
+   deactivate
+Good Luck!
