@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>CKEditor</title>
+        <script src="https://cdn.ckeditor.com/4.12.1/standard/ckeditor.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+		<h1>Essenvia POC</h1>
+		<form id="editor_form" action="#" method="post">
+        	<textarea id="description" name="description"></textarea>
+        	<div style="padding-top: 10px;">
+                <input type="submit" name="Save" id="save" value="Save" class="button">
+            </div>
+    	</form>
+        <div id="desc"></div>
+    </body>
+</html>
+<script>
+CKEDITOR.replace( 'description' );
+$(function(){
+    $("#save").on("click", function(e) {
+        e.preventDefault();
+        console.log($('#description').html());
+        console.log($('#description').val());
+        console.log($('#description').text());
+        var formData = {
+            'description': $('#description').val()
+        };
+        console.log(formData);
+        $.ajax({
+            url: "/server.py",
+            type: "post",
+            data: formData,
+            success: function(d) {
+                alert(d);
+            }
+        });
+    });
+})
+</script>
